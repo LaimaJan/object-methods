@@ -5,15 +5,13 @@ const phoneNumberInput = document.querySelector("#phoneNumber");
 const printOutAddresses = document.querySelector(".output");
 
 displayAddresses();
+let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
 
 document.querySelector("form").addEventListener("submit", (e) => {
 	e.preventDefault();
 
 	const formData = new FormData(e.target);
 	console.log(Object.fromEntries(formData));
-
-	// getAddress();
-	let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || []; // gets our address from localStorage adn then adds another address to it
 
 	ourAddresses.unshift(Object.fromEntries(formData));
 	console.log(ourAddresses);
@@ -22,11 +20,6 @@ document.querySelector("form").addEventListener("submit", (e) => {
 
 	displayAddresses();
 });
-
-// function getAddress() {
-// let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
-// ourAddresses.unshift(Object.fromEntries(formData));
-// }
 
 function displayAddresses() {
 	let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
@@ -40,7 +33,7 @@ function displayAddresses() {
 	ourAddresses.forEach((ourAddress) => {
 		let deleteButton = document.createElement("button");
 		deleteButton.setAttribute("class", "deleteBtn");
-		deleteButton.appendChild(document.createTextNode("Delete"));
+		deleteButton.textContent = "Delete";
 
 		let favoriteButton = document.createElement("button");
 		favoriteButton.setAttribute("class", "favoriteBtn");
@@ -75,27 +68,43 @@ function displayAddresses() {
 }
 
 function deleteAddress() {
-	var deleteElements = document.getElementsByClassName("deleteBtn");
-	for (var i = 0; i < deleteElements.length; i++) {
+	let deleteElements = document.getElementsByClassName("deleteBtn");
+	for (let i = 0; i < deleteElements.length; i++) {
 		deleteElements[i].addEventListener("click", removeItem);
 	}
 
-	function removeItem() {
-		this.parentNode.remove();
+	function removeItem(e) {
+		let item = e.target.parentNode;
+		let experiment = ourAddresses.findIndex;
+		console.log(item);
+		item.remove();
+		localStorage.removeItem(item);
+		localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
 	}
 }
 
 function addAsFavorite() {
-	var favoriteElements = document.getElementsByClassName("favoriteBtn");
-	for (var i = 0; i < favoriteElements.length; i++) {
+	let favoriteElements = document.getElementsByClassName("favoriteBtn");
+	for (let i = 0; i < favoriteElements.length; i++) {
 		favoriteElements[i].addEventListener("click", colouringInAddress);
 	}
 
 	function colouringInAddress() {
+		const favoriteButton = document.querySelector(".favoriteBtn");
+		favoriteButton.classList.toggle("favBtnChanged");
 		this.parentNode.style.backgroundColor = "#f9ed69";
-
-		// const favoriteButton = document.querySelector(".favoriteBtn");
-		// favoriteButton.innerHTML = "FAVORITE";
-		// favoriteButton.style.backgroundColor = "#f08a5d";
 	}
+
+	// let isFavorite = true;
+	// ourAddresses.unshift(isFavorite);
+	// console.log(ourAddresses); //nesamone
+	// localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
 }
+
+// function editAddress() {
+
+// }
+
+// function searchForAddress() {
+
+// }
