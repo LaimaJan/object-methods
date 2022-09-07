@@ -14,7 +14,7 @@ document.querySelector("form").addEventListener("submit", (e) => {
 	console.log(Object.fromEntries(formData));
 
 	ourAddresses.unshift(Object.fromEntries(formData));
-	console.log(ourAddresses);
+	// console.log(ourAddresses);
 
 	localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
 
@@ -30,9 +30,10 @@ function displayAddresses() {
 	}
 	const ul = document.createElement("ul");
 
-	ourAddresses.forEach((ourAddress) => {
+	ourAddresses.forEach((ourAddress, index) => {
 		let deleteButton = document.createElement("button");
 		deleteButton.setAttribute("class", "deleteBtn");
+		deleteButton.setAttribute("id", index);
 		deleteButton.textContent = "Delete";
 
 		let favoriteButton = document.createElement("button");
@@ -74,16 +75,19 @@ function deleteAddress() {
 	}
 
 	function removeItem(e) {
+		let id = e.target.id;
+		// console.log(item);
 		let item = e.target.parentNode;
-		let experiment = ourAddresses.findIndex;
-		console.log(item);
 		item.remove();
-		localStorage.removeItem(item);
+
+		let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
+
+		ourAddresses.splice(id, 1);
 		localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
 	}
 }
 
-function addAsFavorite() {
+function addAsFavorite(e) {
 	let favoriteElements = document.getElementsByClassName("favoriteBtn");
 	for (let i = 0; i < favoriteElements.length; i++) {
 		favoriteElements[i].addEventListener("click", colouringInAddress);
@@ -95,10 +99,11 @@ function addAsFavorite() {
 		this.parentNode.style.backgroundColor = "#f9ed69";
 	}
 
-	// let isFavorite = true;
-	// ourAddresses.unshift(isFavorite);
-	// console.log(ourAddresses); //nesamone
-	// localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
+	// let id = e.target.id;
+	let isFavorite = true;
+	ourAddresses.unshift(isFavorite);
+	console.log(ourAddresses); //nesamone
+	localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
 }
 
 // function editAddress() {
