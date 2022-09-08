@@ -5,7 +5,7 @@ const phoneNumberInput = document.querySelector("#phoneNumber");
 const printOutAddresses = document.querySelector(".output");
 
 displayAddresses();
-let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
+// let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
 
 document.querySelector("form").addEventListener("submit", (e) => {
 	e.preventDefault();
@@ -13,7 +13,12 @@ document.querySelector("form").addEventListener("submit", (e) => {
 	const formData = new FormData(e.target);
 	console.log(Object.fromEntries(formData));
 
-	ourAddresses.unshift(Object.fromEntries(formData));
+	let ourData = Object.fromEntries(formData);
+	ourData.isFavorite = false;
+
+	let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
+
+	ourAddresses.unshift(ourData);
 	// console.log(ourAddresses);
 
 	localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
@@ -38,7 +43,13 @@ function displayAddresses() {
 
 		let favoriteButton = document.createElement("button");
 		favoriteButton.setAttribute("class", "favoriteBtn");
+		favoriteButton.setAttribute("id", index);
 		favoriteButton.appendChild(document.createTextNode("Add to favorites"));
+
+		let changeAddress = document.createElement("button");
+		changeAddress.setAttribute("class", "changeAddress");
+		changeAddress.setAttribute("id", index);
+		changeAddress.appendChild(document.createTextNode("Change address"));
 
 		let addressesHolder = document.createElement("div");
 		addressesHolder.setAttribute("class", "addressHolderDiv");
@@ -52,7 +63,7 @@ function displayAddresses() {
 			//adding delete button to li element
 			addressesHolder
 				.appendChild(deleteButton)
-				.addEventListener("click", deleteAddress);
+				.addEventListener("click", onDeleteButtonClick);
 
 			ul.appendChild(addressesHolder);
 
@@ -62,53 +73,54 @@ function displayAddresses() {
 				.addEventListener("click", addAsFavorite);
 
 			ul.appendChild(addressesHolder);
+
+			addressesHolder
+				.appendChild(changeAddress)
+				.addEventListener("click", editAddress);
+
+			ul.appendChild(addressesHolder);
 		}
 
 		printOutAddresses.appendChild(ul);
 	});
 }
 
-function deleteAddress() {
-	let deleteElements = document.getElementsByClassName("deleteBtn");
-	for (let i = 0; i < deleteElements.length; i++) {
-		deleteElements[i].addEventListener("click", removeItem);
-	}
+function onDeleteButtonClick(e) {
+	let id = e.target.id;
+	console.log(id);
+	let item = e.target.parentNode;
+	item.remove();
 
-	function removeItem(e) {
-		let id = e.target.id;
-		// console.log(item);
-		let item = e.target.parentNode;
-		item.remove();
+	let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
 
-		let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
-
-		ourAddresses.splice(id, 1);
-		localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
-	}
-}
-
-function addAsFavorite(e) {
-	let favoriteElements = document.getElementsByClassName("favoriteBtn");
-	for (let i = 0; i < favoriteElements.length; i++) {
-		favoriteElements[i].addEventListener("click", colouringInAddress);
-	}
-
-	function colouringInAddress() {
-		const favoriteButton = document.querySelector(".favoriteBtn");
-		favoriteButton.classList.toggle("favBtnChanged");
-		this.parentNode.style.backgroundColor = "#f9ed69";
-	}
-
-	// let id = e.target.id;
-	let isFavorite = true;
-	ourAddresses.unshift(isFavorite);
-	console.log(ourAddresses); //nesamone
+	ourAddresses.splice(id, 1);
 	localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
 }
 
-// function editAddress() {
+function addAsFavorite(e) {
+	let id = e.target.id;
 
-// }
+	let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
+
+	if (ourAddresses[id].isFavorite === true) {
+		ourAddresses[id].isFavorite = false;
+	} else {
+		ourAddresses[id].isFavorite = true;
+	}
+
+	console.log(ourAddresses);
+	localStorage.setItem("addressesInfo", JSON.stringify(ourAddresses));
+
+	displayAddresses();
+}
+
+function editAddress(e) {
+	// perpiesiam adresu knyga, sugeneruot input fieldus su tekstu ir tuomet pakeisti juose ir issaugoti
+
+	let id = e.target.id;
+	console.log(id);
+	let ourAddresses = JSON.parse(localStorage.getItem("addressesInfo")) || [];
+}
 
 // function searchForAddress() {
 
